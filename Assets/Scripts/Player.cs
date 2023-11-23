@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.Jobs;
 
 public class Player : MonoBehaviour
 {
@@ -25,7 +26,9 @@ public class Player : MonoBehaviour
     public int vidas = 3;
 
     [SerializeField]
-    private GameObject _explosaoPlayerPrefab;
+    private GameObject _explodindoPlayerPrefab;
+
+    private GerenciadorDeUI _uiGerenciador;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +36,12 @@ public class Player : MonoBehaviour
         UnityEngine.Debug.Log("Start de " + this.name);
         velocidade = 3.0f;
         transform.position = new Vector3(0, 0, 0);
+        _uiGerenciador = GameObject.Find("Canvas").GetComponent<GerenciadorDeUI>();
+        if (_uiGerenciador != null)
+        {
+            _uiGerenciador.AtualizaVidas(vidas);
+
+        }
     }
 
     // Update is called once per frame
@@ -148,11 +157,15 @@ public class Player : MonoBehaviour
     {
         // vidas = vidas - 1;
         vidas--;
+
+        _uiGerenciador.AtualizaVidas(vidas);
+
         if (vidas < 1)
         {
+            Instantiate(_explodindoPlayerPrefab, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
-    }
 
+    }
 }
 
